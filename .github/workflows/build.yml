@@ -25,6 +25,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Set up Developer Command Prompt for Microsoft Visual C++
       uses: ilammy/msvc-dev-cmd@v1
