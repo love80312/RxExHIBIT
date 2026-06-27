@@ -42,7 +42,7 @@ jobs:
       run: cmake --preset ${{ matrix.preset }}
 
     - name: CMake Build
-      run: cmake --build --preset ${{ matrix.preset }}
+      run: cmake --build .build/${{ matrix.preset }}
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
