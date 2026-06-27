@@ -1,0 +1,52 @@
+name: CMake Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [
+          "x64-debug",
+          "x64-release",
+          "x86-debug",
+          "x86-release",
+          "x86-MinSizeRel",
+          "x86-RelWithDebInfo"
+        ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Developer Command Prompt for Microsoft Visual C++
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ contains(matrix.preset, 'x64') && 'x64' || 'x86' }}
+
+    - name: Set up Ninja
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.11.1
+
+    - name: CMake Configure
+      run: cmake --preset ${{ matrix.preset }}
+
+    - name: CMake Build
+      run: cmake --build --preset ${{ matrix.preset }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ExHIBIT_KeyFinder-${{ matrix.preset }}
+        path: |
+          .bin/x32/
+          .bin/x64/
+        if-no-files-found: warn
