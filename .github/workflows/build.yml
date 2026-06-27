@@ -1,4 +1,4 @@
-name: CMake Build
+name: CMake Build (x64 Release Only)
 
 on:
   push:
@@ -10,18 +10,6 @@ jobs:
   build:
     runs-on: windows-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        preset: [
-          "x64-debug",
-          "x64-release",
-          "x86-debug",
-          "x86-release",
-          "x86-MinSizeRel",
-          "x86-RelWithDebInfo"
-        ]
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -31,7 +19,7 @@ jobs:
     - name: Set up Developer Command Prompt for Microsoft Visual C++
       uses: ilammy/msvc-dev-cmd@v1
       with:
-        arch: ${{ contains(matrix.preset, 'x64') && 'x64' || 'x86' }}
+        arch: x64
 
     - name: Set up Ninja
       uses: ashutoshvarma/setup-ninja@master
@@ -39,16 +27,16 @@ jobs:
         version: 1.11.1
 
     - name: CMake Configure
-      run: cmake --preset ${{ matrix.preset }}
+      run: cmake --preset x64-release
 
     - name: CMake Build
-      run: cmake --build .build/${{ matrix.preset }}
+      run: cmake --build .build/x64-release
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ExHIBIT_KeyFinder-${{ matrix.preset }}
+        name: ExHIBIT_KeyFinder-x64-release
         path: |
-          .bin/x32/
-          .bin/x64/
-        if-no-files-found: warn
+          .bin/**/*.exe
+          .bin/**/*.dll
+        if-no-files-found: error
