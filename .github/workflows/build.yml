@@ -36,7 +36,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ExHIBIT_KeyFinder-x64-release
+        # 直接指定 x64 release 的精確輸出路徑並只撈取 exe 與 dll
         path: |
-          .bin/**/*.exe
-          .bin/**/*.dll
+          .bin/x64/release/*.exe
+          .bin/x64/release/*.dll
         if-no-files-found: error
